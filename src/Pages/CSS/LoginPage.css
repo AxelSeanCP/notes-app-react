@@ -1,0 +1,79 @@
+.loginpage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.loginpage-container {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 42px;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+header p {
+  font-size: 18px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.loginpage-fields {
+  margin: 0;
+}
+
+.loginpage-fields input {
+  display: block;
+  width: calc(100% - 16px);
+  padding: 8px;
+  margin: 16px auto;
+  border-radius: 5px;
+}
+
+.loginpage-fields input:focus {
+  border-color: #007bff;
+}
+
+.loginpage-fields button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #171717;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #171717;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #f4f4f4;
+}
+
+.loginpage-register {
+  text-align: center;
+  font-size: 14px;
+  color: #333333;
+  margin-top: 15px;
+}
+
+.loginpage-login span {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.loginpage-login span:hover {
+  text-decoration: underline;
+}
