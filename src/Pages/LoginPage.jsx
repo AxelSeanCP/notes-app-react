@@ -38,31 +38,44 @@ const LoginPage = () => {
   }, [isAuthenticated]);
 
   return (
-    <div className="loginpage">
-      <div className="loginpage-container">
-        <header>
-          <h1>Welcome to Notes App</h1>
-          <p>Please Login to Continue</p>
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="bg-white p-4 rounded">
+        <header className="text-center mb-4">
+          <h1 className="hj fw-bold">Welcome to Notes App</h1>
+          <p className="text-muted">Please Login to Continue</p>
         </header>
-        <form onSubmit={handleSubmit} className="loginpage-fields">
-          <input
-            type="text"
-            name="username"
-            onChange={handleInput}
-            placeholder="Username"
-          />
-          <input
-            type="password"
-            name="password"
-            onChange={handleInput}
-            placeholder="Password"
-          />
-          <button type="submit">Login</button>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <input
+              className="form-control border border-secondary"
+              type="text"
+              name="username"
+              onChange={handleInput}
+              placeholder="Username"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              className="form-control border border-secondary"
+              type="password"
+              name="password"
+              onChange={handleInput}
+              placeholder="Password"
+            />
+          </div>
+          <button
+            className="btn btn-lg btn-white border border-dark p-2 w-100 button-hover"
+            type="submit"
+          >
+            Login
+          </button>
         </form>
-        <p className="loginpage-register">
+        <p className="text-center mt-3">
           Don&apos;t have an account?{" "}
           <span>
-            <Link to="/register">Register here</Link>
+            <Link to="/register" className="text-primary text-decoration-none">
+              Register here
+            </Link>
           </span>
         </p>
       </div>

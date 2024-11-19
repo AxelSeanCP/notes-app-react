@@ -5,6 +5,7 @@ import { NotesContext } from "./NotesContext";
 
 function NotesContextProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState("");
 
   const API_URL = "http://localhost:3000";
 
@@ -52,9 +53,13 @@ function NotesContextProvider({ children }) {
       if (response.status === 201) {
         const responseData = await response.data;
         const { accessToken, refreshToken } = responseData.data;
+
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+
         setIsAuthenticated(true);
+        setUser(username);
+
         alert("Successfully Logged In");
         console.log("Login successfull");
       }
@@ -80,7 +85,10 @@ function NotesContextProvider({ children }) {
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+
         setIsAuthenticated(false);
+        setUser("");
+
         alert("Successfully Logout");
         console.log("Logout successfull");
       }
@@ -90,7 +98,7 @@ function NotesContextProvider({ children }) {
     }
   };
 
-  const contextValue = { isAuthenticated, register, login, logout };
+  const contextValue = { isAuthenticated, user, register, login, logout };
 
   return (
     <NotesContext.Provider value={contextValue}>
