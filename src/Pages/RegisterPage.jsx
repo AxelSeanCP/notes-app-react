@@ -1,7 +1,36 @@
 import "./CSS/RegisterPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { NotesContext } from "../Context/NotesContext";
 
 const RegisterPage = () => {
+  const { register } = useContext(NotesContext);
+  const [input, setInput] = useState({
+    username: "",
+    fullname: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { username, fullname, password } = input;
+    if (username !== "" && fullname !== "" && password !== "") {
+      register(username, fullname, password);
+      navigate("/login");
+    } else {
+      alert("Please fill out all fields");
+    }
+  };
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="registerpage">
       <div className="registerpage-container">
@@ -9,12 +38,27 @@ const RegisterPage = () => {
           <h1>Welcome to Notes App</h1>
           <p>Please Register to Continue</p>
         </header>
-        <div className="registerpage-fields">
-          <input type="text" placeholder="Username" />
-          <input type="text" placeholder="Full Name" />
-          <input type="password" placeholder="Password" />
-          <button>Register</button>
-        </div>
+        <form onSubmit={handleSubmit} className="registerpage-fields">
+          <input
+            type="text"
+            name="username"
+            onChange={handleInput}
+            placeholder="Username"
+          />
+          <input
+            type="text"
+            name="fullname"
+            onChange={handleInput}
+            placeholder="Full Name"
+          />
+          <input
+            type="password"
+            name="password"
+            onChange={handleInput}
+            placeholder="Password"
+          />
+          <button type="submit">Register</button>
+        </form>
         <p className="registerpage-login">
           Already have an account?{" "}
           <span>

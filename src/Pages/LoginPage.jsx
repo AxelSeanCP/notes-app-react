@@ -1,21 +1,41 @@
 import "./CSS/LoginPage.css";
 import { Link } from "react-router-dom";
 import { NotesContext } from "../Context/NotesContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const { login } = useContext(NotesContext);
+  const { login, isAuthenticated } = useContext(NotesContext);
+  const [input, setInput] = useState({
+    username: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    login();
-    navigate("/");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { username, password } = input;
+    if (username !== "" && password !== "") {
+      await login(username, password);
+      navigate("/");
+    } else {
+      alert("Please fill out all fields");
+    }
+  };
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
-    alert("Please login");
-  }, []);
+    if (!isAuthenticated) {
+      alert("Please login");
+    }
+  }, [isAuthenticated]);
 
   return (
     <div className="loginpage">
@@ -24,11 +44,21 @@ const LoginPage = () => {
           <h1>Welcome to Notes App</h1>
           <p>Please Login to Continue</p>
         </header>
-        <div className="loginpage-fields">
-          <input type="text" placeholder="Username" />
-          <input type="password" placeholder="Password" />
-          <button onClick={handleLogin}>Login</button>
-        </div>
+        <form onSubmit={handleSubmit} className="loginpage-fields">
+          <input
+            type="text"
+            name="username"
+            onChange={handleInput}
+            placeholder="Username"
+          />
+          <input
+            type="password"
+            name="password"
+            onChange={handleInput}
+            placeholder="Password"
+          />
+          <button type="submit">Login</button>
+        </form>
         <p className="loginpage-register">
           Don&apos;t have an account?{" "}
           <span>
