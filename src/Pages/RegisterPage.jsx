@@ -1,4 +1,3 @@
-import "./CSS/RegisterPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { NotesContext } from "../Context/NotesContext";
@@ -70,7 +69,7 @@ const RegisterPage = () => {
             />
           </div>
           <button
-            className="btn btn-white btn-lg border border-dark p-2 w-100 button-hover"
+            className="btn btn-outline-dark btn-lg p-2 w-100"
             type="submit"
           >
             Register

@@ -12,6 +12,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
 import Logout from "./Pages/Logout";
+import NotesView from "./Pages/NotesView";
 
 const Layout = () => {
   return (
@@ -26,10 +27,23 @@ const Layout = () => {
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useContext(NotesContext);
+  if (!isAuthenticated) alert("Please login first");
   return isAuthenticated ? children : <Navigate to={"/login"} />;
 };
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "/logout",
+    element: <Logout />,
+  },
   {
     path: "/",
     element: <Layout />,
@@ -38,24 +52,25 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <PrivateRoute>
-            <h1>Welcome to Notes App</h1>
+            <NotesView />
           </PrivateRoute>
         ),
       },
       {
-        path: "/login",
-        element: <LoginPage />,
+        path: "notes/:noteId",
+        element: (
+          <PrivateRoute>
+            <h1>Coming soon</h1>
+          </PrivateRoute>
+        ),
       },
       {
-        path: "/register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "/logout",
-        element: <Logout />,
-      },
-      {
-        path: "/about",
+        path: "notes/new",
+        element: (
+          <PrivateRoute>
+            <h1>Coming soon</h1>
+          </PrivateRoute>
+        ),
       },
     ],
   },

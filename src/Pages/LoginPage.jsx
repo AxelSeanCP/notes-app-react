@@ -1,11 +1,10 @@
-import "./CSS/LoginPage.css";
 import { Link } from "react-router-dom";
 import { NotesContext } from "../Context/NotesContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const { login, isAuthenticated } = useContext(NotesContext);
+  const { login } = useContext(NotesContext);
   const [input, setInput] = useState({
     username: "",
     password: "",
@@ -30,12 +29,6 @@ const LoginPage = () => {
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      alert("Please login");
-    }
-  }, [isAuthenticated]);
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
@@ -64,7 +57,7 @@ const LoginPage = () => {
             />
           </div>
           <button
-            className="btn btn-lg btn-white border border-dark p-2 w-100 button-hover"
+            className="btn btn-lg btn-outline-dark p-2 w-100"
             type="submit"
           >
             Login

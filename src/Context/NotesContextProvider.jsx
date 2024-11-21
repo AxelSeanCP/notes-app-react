@@ -1,29 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropType from "prop-types";
-import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import api from "../utils/AxiosApiHelper";
 import { NotesContext } from "./NotesContext";
 
 function NotesContextProvider({ children }) {
+  //Authentications
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = "http://localhost:3000";
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const user = localStorage.getItem("user");
+    if (token) {
+      setIsAuthenticated(true);
+      setUser(user.fullname);
+    }
+    setIsLoading(false);
+  }, []);
 
   const register = async (username, fullname, password) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/users`,
-        {
-          username,
-          fullname,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await api.post("/users", {
+        username,
+        fullname,
+        password,
+      });
 
       if (response.status === 201) {
         console.log("Register successfull");
@@ -37,28 +40,27 @@ function NotesContextProvider({ children }) {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/authentications`,
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await api.post("/authentications", {
+        username: username,
+        password: password,
+      });
 
       if (response.status === 201) {
-        const responseData = await response.data;
-        const { accessToken, refreshToken } = responseData.data;
+        const { accessToken, refreshToken } = response.data.data;
 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
+        const decoded = jwtDecode(accessToken);
+        const userId = decoded.id;
+
+        const userResponse = await api.get(`/users/${userId}`);
+        const user = userResponse.data.data.user;
+
+        localStorage.setItem("user", JSON.stringify(user));
+
         setIsAuthenticated(true);
-        setUser(username);
+        setUser(user.fullname);
 
         alert("Successfully Logged In");
         console.log("Login successfull");
@@ -73,23 +75,18 @@ function NotesContextProvider({ children }) {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
 
-      const response = await axios.delete(`${API_URL}/authentications`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: {
-          refreshToken: refreshToken,
-        },
+      const response = await api.delete("/authentications", {
+        data: { refreshToken },
       });
 
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
 
         setIsAuthenticated(false);
         setUser("");
 
-        alert("Successfully Logout");
         console.log("Logout successfull");
       }
     } catch (error) {
@@ -98,11 +95,34 @@ function NotesContextProvider({ children }) {
     }
   };
 
-  const contextValue = { isAuthenticated, user, register, login, logout };
+  //Notes
+  const getNotes = async () => {
+    try {
+      const response = await api.get("/notes");
+
+      if (response.status === 200) {
+        const { notes } = response.data.data;
+        return notes || [];
+      }
+    } catch (error) {
+      alert("Get notes failed. Please try again");
+      console.error("Get Notes error: ", error.response?.data || error.message);
+      return [];
+    }
+  };
+
+  const contextValue = {
+    isAuthenticated,
+    user,
+    register,
+    login,
+    logout,
+    getNotes,
+  };
 
   return (
     <NotesContext.Provider value={contextValue}>
-      {children}
+      {!isLoading ? children : <div>Loading.....</div>}
     </NotesContext.Provider>
   );
 }
