@@ -7,45 +7,41 @@ const api = axios.create({
   },
 });
 
-const token = localStorage.getItem("accessToken");
-if (token) {
-  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
+const isTokenExpired = (token) => {
+  if (!token) return true;
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  const [, payload] = token.split(".");
+  const { exp } = JSON.parse(atob(payload));
+  const currentTime = Math.floor(Date.now() / 1000);
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+  return exp <= currentTime;
+};
 
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        const { data } = await api.put("/authentications", { refreshToken });
+api.interceptors.request.use(async (config) => {
+  let accessToken = localStorage.getItem("accessToken");
 
-        const newAccessToken = data.data.accessToken;
+  if (!accessToken) {
+    return config;
+  }
 
-        localStorage.setItem("accessToken", newAccessToken);
-
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        return api(originalRequest);
-      } catch (error) {
-        console.error("Token refresh failed: ", error);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
-        alert("Mohon login ulang");
-        window.location.href = "/login";
-      }
+  if (isTokenExpired(accessToken)) {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (isTokenExpired(refreshToken)) {
+      alert("Session expired. Please login again");
+      localStorage.clear();
+      window.location.href = "/login";
+      return Promise.reject(new Error("Refresh token expired"));
     }
 
-    return Promise.reject(error);
+    const { data } = await api.put("/authentications", { refreshToken });
+    accessToken = data.data.accessToken;
+    localStorage.setItem("accessToken", accessToken);
+
+    api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
-);
+
+  config.headers["Authorization"] = `Bearer ${accessToken}`;
+  return config;
+});
 
 export default api;

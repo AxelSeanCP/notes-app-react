@@ -13,6 +13,8 @@ import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
 import Logout from "./Pages/Logout";
 import NotesView from "./Pages/NotesView";
+import AddNotes from "./Pages/AddNotes";
+import NotesDetail from "./Pages/NotesDetail";
 
 const Layout = () => {
   return (
@@ -60,7 +62,7 @@ const router = createBrowserRouter([
         path: "notes/:noteId",
         element: (
           <PrivateRoute>
-            <h1>Coming soon</h1>
+            <NotesDetail />
           </PrivateRoute>
         ),
       },
@@ -68,7 +70,7 @@ const router = createBrowserRouter([
         path: "notes/new",
         element: (
           <PrivateRoute>
-            <h1>Coming soon</h1>
+            <AddNotes />
           </PrivateRoute>
         ),
       },

@@ -1,6 +1,6 @@
 import NotesCard from "../Components/NotesCard/NotesCard";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { NotesContext } from "../Context/NotesContext";
 import plusIcon from "../assets/plus_icon.png";
 
@@ -9,6 +9,7 @@ const NotesView = () => {
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -20,7 +21,7 @@ const NotesView = () => {
     };
 
     fetchNotes();
-  }, [getNotes]);
+  }, [getNotes, location]);
 
   const handleAddNote = () => {
     navigate("/notes/new");

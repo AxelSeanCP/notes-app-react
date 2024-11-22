@@ -13,9 +13,12 @@ function NotesContextProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     const user = localStorage.getItem("user");
-    if (token) {
+
+    if (token && user) {
+      const { fullname } = JSON.parse(user);
+
       setIsAuthenticated(true);
-      setUser(user.fullname);
+      setUser(fullname);
     }
     setIsLoading(false);
   }, []);
@@ -62,7 +65,6 @@ function NotesContextProvider({ children }) {
         setIsAuthenticated(true);
         setUser(user.fullname);
 
-        alert("Successfully Logged In");
         console.log("Login successfull");
       }
     } catch (error) {
@@ -98,7 +100,13 @@ function NotesContextProvider({ children }) {
   //Notes
   const getNotes = async () => {
     try {
-      const response = await api.get("/notes");
+      const token = localStorage.getItem("accessToken");
+      const response = await api.get("/notes", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         const { notes } = response.data.data;
@@ -111,6 +119,30 @@ function NotesContextProvider({ children }) {
     }
   };
 
+  const addNote = async (title, body, tags) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.post(
+        "/notes",
+        { title, tags, body },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Add notes successfull");
+        console.log("Add notes successfull");
+      }
+    } catch (error) {
+      alert("Add notes failed. Please try again");
+      console.error("Add Notes error: ", error.response?.data || error.message);
+    }
+  };
+
   const contextValue = {
     isAuthenticated,
     user,
@@ -118,6 +150,7 @@ function NotesContextProvider({ children }) {
     login,
     logout,
     getNotes,
+    addNote,
   };
 
   return (
