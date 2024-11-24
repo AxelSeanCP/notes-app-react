@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -10,11 +11,15 @@ const api = axios.create({
 const isTokenExpired = (token) => {
   if (!token) return true;
 
-  const [, payload] = token.split(".");
-  const { exp } = JSON.parse(atob(payload));
-  const currentTime = Math.floor(Date.now() / 1000);
+  try {
+    const { iat } = jwtDecode(token);
+    const currentTime = Math.floor(Date.now() / 1000);
 
-  return exp <= currentTime;
+    return currentTime > iat + 1500; //TODO: Fix this in backend
+  } catch (error) {
+    console.error("Error decoding token: ", error);
+    return true;
+  }
 };
 
 api.interceptors.request.use(async (config) => {
@@ -26,18 +31,18 @@ api.interceptors.request.use(async (config) => {
 
   if (isTokenExpired(accessToken)) {
     const refreshToken = localStorage.getItem("refreshToken");
-    if (isTokenExpired(refreshToken)) {
+
+    try {
+      const { data } = await api.put("/authentications", { refreshToken });
+      accessToken = data.data.accessToken;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", "expiredTOkenhahahah");
+    } catch (error) {
+      console.error("Failed to refresh token: ", error);
       alert("Session expired. Please login again");
-      localStorage.clear();
-      window.location.href = "/login";
+      window.location.href = "/logout";
       return Promise.reject(new Error("Refresh token expired"));
     }
-
-    const { data } = await api.put("/authentications", { refreshToken });
-    accessToken = data.data.accessToken;
-    localStorage.setItem("accessToken", accessToken);
-
-    api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
 
   config.headers["Authorization"] = `Bearer ${accessToken}`;

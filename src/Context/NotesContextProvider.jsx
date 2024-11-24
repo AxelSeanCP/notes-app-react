@@ -82,9 +82,7 @@ function NotesContextProvider({ children }) {
       });
 
       if (response.status === 200) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
+        localStorage.clear();
 
         setIsAuthenticated(false);
         setUser("");
@@ -119,6 +117,26 @@ function NotesContextProvider({ children }) {
     }
   };
 
+  const getNoteById = async (noteId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.get(`/notes/${noteId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const { note } = response.data.data;
+        return note;
+      }
+    } catch (error) {
+      alert("Get detail note failed. Please try again");
+      console.error("Get Note error: ", error.response?.data || error.message);
+    }
+  };
+
   const addNote = async (title, body, tags) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -134,12 +152,59 @@ function NotesContextProvider({ children }) {
       );
 
       if (response.status === 201) {
-        alert("Add notes successfull");
         console.log("Add notes successfull");
       }
     } catch (error) {
       alert("Add notes failed. Please try again");
       console.error("Add Notes error: ", error.response?.data || error.message);
+    }
+  };
+
+  const editNote = async (noteId, title, body, tags) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.put(
+        `/notes/${noteId}`,
+        { title, body, tags },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Edit notes successfull");
+      }
+    } catch (error) {
+      alert("Edit notes failed. Please try again");
+      console.error(
+        "Edit Notes error: ",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const deleteNote = async (noteId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.delete(`/notes/${noteId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("Delete notes successfull");
+      }
+    } catch (error) {
+      alert("Delete notes failed. Please try again");
+      console.error(
+        "Delete Notes error: ",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -150,6 +215,9 @@ function NotesContextProvider({ children }) {
     login,
     logout,
     getNotes,
+    getNoteById,
+    editNote,
+    deleteNote,
     addNote,
   };
 

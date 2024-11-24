@@ -13,6 +13,9 @@ const NotesView = () => {
 
   useEffect(() => {
     const fetchNotes = async () => {
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       const fetchedNotes = await getNotes();
       if (fetchedNotes) {
         setNotes(fetchedNotes);
@@ -30,7 +33,14 @@ const NotesView = () => {
   return (
     <div>
       {isLoading ? (
-        <h3>Loading notes....</h3>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "100vh" }}
+        >
+          <div className="spinner-border text-dark" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       ) : (
         <div>
           {notes.length > 0 ? (

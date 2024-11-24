@@ -77,10 +77,10 @@ const AddNotes = () => {
       </div>
 
       <div className="d-flex justify-content-start w-100">
-        <button type="submit" className="btn btn-primary me-3">
+        <button type="submit" className="btn btn-dark me-3">
           Save Note
         </button>
-        <button onClick={handleDiscard} className="btn btn-danger">
+        <button onClick={handleDiscard} className="btn btn-outline-dark">
           Discard
         </button>
       </div>
