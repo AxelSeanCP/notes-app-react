@@ -12,7 +12,7 @@ const Navbar = () => {
         <p className="m-0 fs-2 text-dark fw-bold nav-title-text">Notes App</p>
       </div>
       <div className="nav-login d-flex align-items-center gap-4">
-        <p className="m-0 text-dark">Login as {user}</p>
+        <p className="m-0 text-dark">Logged in as {user}</p>
         <Link style={{ textDecoration: "none" }} to="/about">
           <p className="m-0 text-primary">About Us</p>
         </Link>
