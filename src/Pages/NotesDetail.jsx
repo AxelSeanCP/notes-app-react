@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { NotesContext } from "../Context/NotesContext";
 import pencilIcon from "../assets/pencil_icon.png";
+import Loader from "../Components/Loader/Loader";
+import NotesActionButton from "../Components/NotesActionButton/NotesActionButton";
 
 const NotesDetail = () => {
   const { noteId } = useParams();
@@ -31,14 +33,7 @@ const NotesDetail = () => {
   return (
     <div>
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
-          <div className="spinner-border text-dark" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+        <Loader />
       ) : (
         <form
           className="container mt-5 d-flex flex-column align-items-center"
@@ -85,24 +80,11 @@ const NotesDetail = () => {
             ></textarea>
           </div>
 
-          <button
-            type="button"
-            className="btn btn-dark btn-lg rounded-sm position-fixed p-3"
-            style={{ bottom: "20px", right: "20px" }}
+          <NotesActionButton
             onClick={handleEditNote}
-          >
-            <img
-              src={pencilIcon}
-              alt="pencil icon"
-              style={{
-                width: "20px",
-                height: "20px",
-                verticalAlign: "middle",
-                marginRight: "10px",
-              }}
-            />
-            Edit Note
-          </button>
+            icon={pencilIcon}
+            text={"Edit Note"}
+          />
         </form>
       )}
     </div>

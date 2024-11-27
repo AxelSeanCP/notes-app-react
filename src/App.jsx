@@ -31,7 +31,7 @@ const Layout = () => {
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useContext(NotesContext);
   if (!isAuthenticated) alert("Please login first");
-  return isAuthenticated ? children : <Navigate to={"/login"} />;
+  return isAuthenticated ? children : <Navigate to={"/logout"} />;
 };
 
 const router = createBrowserRouter([

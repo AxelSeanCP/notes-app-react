@@ -37,7 +37,7 @@ const LoginPage = () => {
           <h1 className="hj fw-bold">Welcome to Notes App</h1>
           <p className="text-muted">Please Login to Continue</p>
         </header>
-        <form onSubmit={handleSubmit}>
+        <div>
           <div className="mb-3">
             <input
               className="form-control border border-secondary"
@@ -58,11 +58,11 @@ const LoginPage = () => {
           </div>
           <button
             className="btn btn-lg btn-outline-dark p-2 w-100"
-            type="submit"
+            onClick={handleSubmit}
           >
             Login
           </button>
-        </form>
+        </div>
         <p className="text-center mt-3">
           Don&apos;t have an account?{" "}
           <span>

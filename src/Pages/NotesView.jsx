@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NotesContext } from "../Context/NotesContext";
 import plusIcon from "../assets/plus_icon.png";
+import Loader from "../Components/Loader/Loader";
+import NotesActionButton from "../Components/NotesActionButton/NotesActionButton";
 
 const NotesView = () => {
   const { getNotes } = useContext(NotesContext);
@@ -33,14 +35,7 @@ const NotesView = () => {
   return (
     <div>
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
-          <div className="spinner-border text-dark" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+        <Loader />
       ) : (
         <div>
           {notes.length > 0 ? (
@@ -64,24 +59,11 @@ const NotesView = () => {
         </div>
       )}
 
-      <button
-        type="button"
-        className="btn btn-dark btn-lg rounded-sm position-fixed p-3"
-        style={{ bottom: "20px", right: "20px" }}
+      <NotesActionButton
         onClick={handleAddNote}
-      >
-        <img
-          src={plusIcon}
-          alt="plus icon"
-          style={{
-            width: "20px",
-            height: "20px",
-            verticalAlign: "middle",
-            marginRight: "10px",
-          }}
-        />{" "}
-        Add Note
-      </button>
+        icon={plusIcon}
+        text={"Add Note"}
+      />
     </div>
   );
 };

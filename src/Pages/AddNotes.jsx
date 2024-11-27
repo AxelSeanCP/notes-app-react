@@ -36,8 +36,7 @@ const AddNotes = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <div
       className="container mt-5 d-flex flex-column align-items-center"
       style={{ maxWidth: "800px" }}
     >
@@ -77,14 +76,14 @@ const AddNotes = () => {
       </div>
 
       <div className="d-flex justify-content-start w-100">
-        <button type="submit" className="btn btn-dark me-3">
+        <button onClick={handleSubmit} className="btn btn-dark me-3">
           Save Note
         </button>
         <button onClick={handleDiscard} className="btn btn-outline-dark">
           Discard
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

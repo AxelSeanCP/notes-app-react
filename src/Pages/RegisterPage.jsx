@@ -37,7 +37,7 @@ const RegisterPage = () => {
           <h1 className="h1 fw-bold">Welcome to Notes App</h1>
           <p className="text-muted">Please Register to Continue</p>
         </header>
-        <form onSubmit={handleSubmit}>
+        <div>
           <div className="mb-3">
             <input
               className="form-control border border-secondary"
@@ -70,11 +70,11 @@ const RegisterPage = () => {
           </div>
           <button
             className="btn btn-outline-dark btn-lg p-2 w-100"
-            type="submit"
+            onClick={handleSubmit}
           >
             Register
           </button>
-        </form>
+        </div>
         <p className="text-center mt-3">
           Already have an account?{" "}
           <Link to="/login" className="text-primary text-decoration-none">

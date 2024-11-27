@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { NotesContext } from "../Context/NotesContext";
 import Modal from "../Components/Modal/Modal";
+import AddCollaborator from "../Components/AddCollaborator/AddCollaborator";
 
 const EditNotes = () => {
   const { noteId } = useParams();
@@ -67,8 +68,7 @@ const EditNotes = () => {
   return (
     <div>
       <Modal confirmDelete={confirmDelete} isDeleting={isDeleting} />
-      <form
-        onSubmit={handleSubmit}
+      <div
         className="container mt-5 d-flex flex-column align-items-center"
         style={{ maxWidth: "800px" }}
       >
@@ -107,8 +107,10 @@ const EditNotes = () => {
           ></textarea>
         </div>
 
+        <AddCollaborator noteId={noteId} />
+
         <div className="d-flex justify-content-start w-100">
-          <button type="submit" className="btn btn-dark me-3">
+          <button onClick={handleSubmit} className="btn btn-dark me-3">
             Save Note
           </button>
           <button
@@ -120,7 +122,7 @@ const EditNotes = () => {
             Delete Note
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

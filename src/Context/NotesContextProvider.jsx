@@ -5,10 +5,33 @@ import api from "../utils/AxiosApiHelper";
 import { NotesContext } from "./NotesContext";
 
 function NotesContextProvider({ children }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  //Users
+  const searchUser = async (username) => {
+    try {
+      const response = await api.get(`/users?username=${username}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        const { users } = response.data.data;
+        return users;
+      }
+    } catch (error) {
+      alert("Search user failed. Please try again");
+      console.error(
+        "Search User Error: ",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   //Authentications
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -203,6 +226,58 @@ function NotesContextProvider({ children }) {
       alert("Delete notes failed. Please try again");
       console.error(
         "Delete Notes error: ",
+        error.response?.data.message || error.message
+      );
+    }
+  };
+
+  //Collaborations
+  const addCollaborator = async (noteId, userId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.post(
+        "/collaborations",
+        { noteId: noteId, userId: userId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Add collaborator successfull");
+        console.log("Add Collaborator successfull");
+      }
+    } catch (error) {
+      alert("Add collaborator failed. Please try again");
+      console.error(
+        "Add Collaborator Error: ",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const deleteCollaborator = async (noteId, userId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.delete("/collaborations", {
+        data: { noteId, userId },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("Delete collaborator successfull");
+        console.log("Delete Collaborator successfull");
+      }
+    } catch (error) {
+      alert("Delete collaborator failed. Please try again");
+      console.error(
+        "Delete Collaborator Error: ",
         error.response?.data || error.message
       );
     }
@@ -211,6 +286,7 @@ function NotesContextProvider({ children }) {
   const contextValue = {
     isAuthenticated,
     user,
+    searchUser,
     register,
     login,
     logout,
@@ -219,6 +295,8 @@ function NotesContextProvider({ children }) {
     editNote,
     deleteNote,
     addNote,
+    addCollaborator,
+    deleteCollaborator,
   };
 
   return (

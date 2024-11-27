@@ -45,7 +45,6 @@ api.interceptors.request.use(async (config) => {
     }
   }
 
-  config.headers["Authorization"] = `Bearer ${accessToken}`;
   return config;
 });
 
